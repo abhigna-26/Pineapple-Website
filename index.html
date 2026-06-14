@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pineapple | Enterprise Web Solutions for Growing Businesses</title>
+    <meta name="description" content="Pineapple designs and builds premium, high-performance websites for clinics, schools, and retail businesses. Standardized quality, results-focused.">
+    
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="Pineapple | Premium Web Solutions for Modern SMBs" />
+    <meta property="og:description" content="We build fast, secure, and custom-designed web applications to help growing local businesses and SMBs stand out." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pineapple" />
+
+    <!-- Style sheets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Flash-free Theme Check Script -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- Environmental Foliage Depth Layers (Behind Container) -->
+    <div class="foliage foliage-left" aria-hidden="true">
+        <svg viewBox="0 0 100 200" fill="none" stroke="currentColor">
+            <path d="M50 190 C50 130 50 70 50 10" stroke="var(--sage)" stroke-width="1.5"/>
+            <!-- Left side leaves -->
+            <path d="M50 150 Q20 135 15 115 Q25 95 50 115" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 110 Q15 95 10 75 Q20 55 50 75" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 70 Q10 55 8 35 Q18 15 50 35" fill="var(--sage)" opacity="0.6"/>
+            <!-- Right side leaves -->
+            <path d="M50 130 Q80 115 85 95 Q75 75 50 95" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 90 Q85 75 90 55 Q80 35 50 55" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 50 Q90 35 92 15 Q82 -5 50 15" fill="var(--sage)" opacity="0.6"/>
+        </svg>
+    </div>
+    <div class="foliage foliage-right" aria-hidden="true">
+        <svg viewBox="0 0 100 200" fill="none" stroke="currentColor">
+            <path d="M50 190 C50 130 50 70 50 10" stroke="var(--sage)" stroke-width="1.5"/>
+            <!-- Left side leaves -->
+            <path d="M50 140 Q25 120 20 100 Q30 80 50 100" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 100 Q20 85 15 65 Q25 45 50 65" fill="var(--sage)" opacity="0.6"/>
+            <!-- Right side leaves -->
+            <path d="M50 160 Q75 145 80 125 Q70 105 50 125" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 120 Q80 105 85 85 Q75 65 50 85" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 80 Q85 65 90 45 Q80 25 50 45" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 40 Q90 25 92 5 Q82 -15 50 5" fill="var(--sage)" opacity="0.6"/>
+        </svg>
+    </div>
+
+    <!-- Foreground Foliage (In front of container for depth-of-field overlay) -->
+    <div class="foliage-fg foliage-fg-left" aria-hidden="true">
+        <svg viewBox="0 0 100 200" fill="none" stroke="currentColor">
+            <path d="M50 190 C50 130 50 70 50 10" stroke="var(--sage)" stroke-width="2"/>
+            <path d="M50 150 Q10 120 5 90 Q20 60 50 90" fill="var(--sage)" opacity="0.55"/>
+            <path d="M50 100 Q90 70 95 40 Q80 10 50 40" fill="var(--sage)" opacity="0.55"/>
+        </svg>
+    </div>
+    <div class="foliage-fg foliage-fg-right" aria-hidden="true">
+        <svg viewBox="0 0 100 200" fill="none" stroke="currentColor">
+            <path d="M50 190 C50 130 50 70 50 10" stroke="var(--sage)" stroke-width="2"/>
+            <path d="M50 130 Q15 100 10 70 Q30 40 50 70" fill="var(--sage)" opacity="0.55"/>
+            <path d="M50 80 Q85 50 90 20 Q70 -10 50 20" fill="var(--sage)" opacity="0.55"/>
+        </svg>
+    </div>
+
+    <!-- Premium Landing Loading Overlay -->
+    <div id="landing-overlay">
+        <svg class="loader-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L10 6H14L12 2Z" fill="currentColor"></path>
+            <path d="M6 10C6 7.79 7.79 6 10 6H14C16.21 6 18 7.79 18 10V16C18 18.21 16.21 20 14 20H10C7.79 20 6 18.21 6 16V10Z"></path>
+            <path d="M9 10L15 16"></path>
+            <path d="M15 10L9 16"></path>
+        </svg>
+    </div>
+
+    <!-- Full-screen Background Canvas (Sphere layer: z-index -2) -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Full-screen Particle Canvas (Particle layer: z-index -1) -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Cursor Spotlight Glow Overlay (z-index -1) -->
+    <div id="cursor-spotlight"></div>
+
+    <!-- Header Navigation -->
+    <header class="header" id="header">
+        <div class="container">
+            <a href="#home" class="logo" id="logo-link" aria-label="Pineapple Home">
+                <img src="logo.png" alt="Pineapple Logo" class="logo-icon">
+                <span class="brand-name">PINEAPPLE</span>
+            </a>
+
+            <!-- Desktop Links -->
+            <nav aria-label="Desktop Navigation">
+                <ul class="nav-links">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-right header-actions">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle visual theme">
+                    <!-- Sun Icon -->
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <!-- Moon Icon -->
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+
+                <a href="#contact" class="btn btn-primary cta-button">Let's Talk</a>
+
+                <!-- Mobile Hamburger Button -->
+                <button id="mobile-menu-btn" class="hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <span class="line-1"></span>
+                    <span class="line-2"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Overlay Menu -->
+    <div id="mobile-menu" class="mobile-menu">
+        <nav aria-label="Mobile Navigation">
+            <ul class="mobile-menu-links">
+                <li><a href="#home" class="mobile-menu-link" style="transition-delay: 0.1s">Home</a></li>
+                <li><a href="#about" class="mobile-menu-link" style="transition-delay: 0.15s">About</a></li>
+                <li><a href="#services" class="mobile-menu-link" style="transition-delay: 0.2s">Services</a></li>
+                <li><a href="#contact" class="mobile-menu-link" style="transition-delay: 0.25s">Contact</a></li>
+                <li><a href="#contact" class="btn btn-primary mobile-menu-link" style="transition-delay: 0.3s; margin-top: 1rem;">Let's Talk</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero grid-bg-container">
+            <div class="grid-bg"></div>
+            <div class="container hero-container-layout hero-container">
+                <!-- Left Column (Copy and CTAs) -->
+                <div class="hero-content-left hero-content">
+                    <span class="section-tag entrance-1">Premium Web Solutions</span>
+                    <h1 class="entrance-1">Digital experiences<br>built for <span class="text-italic-rose">ambitious businesses.</span></h1>
+                    <p class="entrance-2 hero-description">We design and engineer fast, secure, and scalable websites that help you grow with confidence.</p>
+                    <div class="hero-actions entrance-3">
+                        <a href="#contact" class="btn btn-primary btn-large">
+                            <span>Start Your Project</span>
+                            <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                        <a href="#services" class="btn btn-secondary btn-large">
+                            <span>View Our Work</span>
+                            <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                    
+                    <!-- Hero Trust & Stats Row -->
+                    <div class="hero-trust-row entrance-4 trust-badges">
+                        <div class="trust-faces">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Client Avatar">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Client Avatar">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" alt="Client Avatar">
+                        </div>
+                        <div class="trust-text">
+                            <span class="trust-desc">Trusted by growing businesses across India</span>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item"><strong>50+</strong> <span>Projects Delivered</span></div>
+                            <div class="stat-item"><strong>99%</strong> <span>Satisfaction Rate</span></div>
+                            <div class="stat-item"><strong>24/7</strong> <span>Support</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (3D Monolith) -->
+                <div class="hero-visual-right entrance-4 hero-visual">
+                    <canvas id="hero-canvas" class="hero-canvas"></canvas>
+                </div>
+                
+                <!-- 3-Step Process Cards (Below hero row) -->
+                <div class="card-grid process-grid entrance-5">
+                    <!-- Card 1 -->
+                    <div class="card process-card">
+                        <div class="process-card-content">
+                            <div class="process-card-header">
+                                <div class="process-icon-circle process-icon rose-bg"><i class="fa-solid fa-comments"></i></div>
+                                <div class="process-step-num">01</div>
+                            </div>
+                            <div class="process-card-body">
+                                <h3 class="card-title">The Brief</h3>
+                                <p class="card-description">Understanding your goals, audience, and business requirements.</p>
+                            </div>
+                        </div>
+                        <div class="process-card-action">
+                            <div class="process-arrow-btn process-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="card process-card">
+                        <div class="process-card-content">
+                            <div class="process-card-header">
+                                <div class="process-icon-circle process-icon pink-bg"><i class="fa-solid fa-code"></i></div>
+                                <div class="process-step-num">02</div>
+                            </div>
+                            <div class="process-card-body">
+                                <h3 class="card-title">The Build</h3>
+                                <p class="card-description">Building scalable, modern, and high-performing digital experiences.</p>
+                            </div>
+                        </div>
+                        <div class="process-card-action">
+                            <div class="process-arrow-btn process-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="card process-card">
+                        <div class="process-card-content">
+                            <div class="process-card-header">
+                                <div class="process-icon-circle process-icon sage-bg"><i class="fa-solid fa-rocket"></i></div>
+                                <div class="process-step-num">03</div>
+                            </div>
+                            <div class="process-card-body">
+                                <h3 class="card-title">The Launch</h3>
+                                <p class="card-description">Deployment, optimization, and ongoing technical support.</p>
+                            </div>
+                        </div>
+                        <div class="process-card-action">
+                            <div class="process-arrow-btn process-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="section-alt">
+            <div class="container">
+                <div class="section-title center reveal">
+                    <span class="section-tag">Our Expertise</span>
+                    <h2>Solutions that move<br>your business <span class="text-italic-rose">forward.</span></h2>
+                    <p>High-end performance and customer-centric design tailored for scaling companies.</p>
+                </div>
+
+                <div class="card-grid services-grid reveal reveal-stagger">
+                    <!-- Card 1 (Wide Bento Card) -->
+                    <div class="card service-card service-card-wide">
+                        <div class="service-card-content">
+                            <span class="section-tag-mini">What We Do</span>
+                            <h3 class="card-title-serif">Digital Presence</h3>
+                            <p class="card-description">We build modern, easy-to-use websites that look exceptional on every device. Zero jargon—just simple, optimized code that converts visitors into customers.</p>
+                            <div class="service-card-footer">
+                                <span>Core Service</span>
+                                <span>Enterprise Design</span>
+                            </div>
+                        </div>
+                        <div class="service-card-visual design-visual">
+                            <div class="editorial-layout-visual">
+                                <div class="glass-layout-pane pane-1">
+                                    <div class="editorial-tag-mini">Aesthetic</div>
+                                    <div class="editorial-line-heavy"></div>
+                                    <div class="editorial-line-light"></div>
+                                    <div class="editorial-line-light long"></div>
+                                </div>
+                                <div class="glass-layout-pane pane-2">
+                                    <div class="editorial-circle-accent"></div>
+                                    <div class="editorial-line-heavy"></div>
+                                    <div class="editorial-line-light"></div>
+                                    <div class="editorial-line-light"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 (Tall Bento Card) -->
+                    <div class="card service-card service-card-tall">
+                        <div class="service-card-content">
+                            <span class="section-tag-mini">Local Reach</span>
+                            <h3 class="card-title-serif">SEO &amp; Visibility</h3>
+                            <p class="card-description">We build templates and features customized for Indian local businesses, making it effortless to reach customers in your city and surrounding region.</p>
+                        </div>
+                        <div class="service-card-visual local-visual">
+                            <div class="glass-disk-sculpture">
+                                <div class="sculpture-disk disk-rose"></div>
+                                <div class="sculpture-disk disk-sage"></div>
+                                <div class="sculpture-center-sphere"></div>
+                                <div class="sculpture-ring"></div>
+                            </div>
+                        </div>
+                        <div class="service-card-footer">
+                            <span>Marketing Focus</span>
+                            <span>Regional SEO</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 (Tall Bento Card) -->
+                    <div class="card service-card service-card-tall">
+                        <div class="service-card-content">
+                            <span class="section-tag-mini">Speed</span>
+                            <h3 class="card-title-serif">Performance</h3>
+                            <p class="card-description">Engineered to load instantly on any connection speed or mobile device. Never lose another prospect to load lag.</p>
+                        </div>
+                        <div class="service-card-visual speed-visual">
+                            <div class="stacked-glass-3d">
+                                <div class="glass-sheet sheet-bottom"></div>
+                                <div class="glass-sheet sheet-middle"></div>
+                                <div class="glass-sheet sheet-top"></div>
+                            </div>
+                        </div>
+                        <div class="service-card-footer">
+                            <span>Architecture</span>
+                            <span>99.9% Uptime</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 (Wide Bento Card) -->
+                    <div class="card service-card service-card-wide">
+                        <div class="service-card-content">
+                            <span class="section-tag-mini">Maintenance</span>
+                            <h3 class="card-title-serif">Personal Support</h3>
+                            <p class="card-description">We operate as your technical partners. You will always speak to a dedicated developer, never a bot, providing support whenever your team needs it.</p>
+                            <div class="service-card-footer">
+                                <span>Support</span>
+                                <span>24/7 Priority</span>
+                            </div>
+                        </div>
+                        <div class="service-card-visual support-visual">
+                            <div class="frosted-cards-composition">
+                                <div class="composition-card card-sage"></div>
+                                <div class="composition-card card-cream"></div>
+                                <div class="composition-card card-rose"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Why Us Section -->
+        <section id="why-us">
+            <div class="container">
+                <div class="section-title center reveal">
+                    <span class="section-tag">Value Proposition</span>
+                    <h2>Why Work With Us?</h2>
+                    <p>Designed to deliver performance, trust, and alignment from day one.</p>
+                </div>
+
+                <div class="card-grid why-us-grid reveal reveal-stagger">
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                        <h3 class="card-title" style="font-size: 1.15rem;">Fast Turnaround</h3>
+                        <p class="card-description" style="font-size: 0.875rem;">Rapid deployment cycles to get your digital presence online and driving revenue as quickly as possible.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <h3 class="card-title" style="font-size: 1.15rem;">Personal Support</h3>
+                        <p class="card-description" style="font-size: 0.875rem;">Dedicated support lines for uninterrupted service, adjustments, and immediate performance updates.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-credit-card"></i></div>
+                        <h3 class="card-title" style="font-size: 1.15rem;">Fair Pricing</h3>
+                        <p class="card-description" style="font-size: 0.875rem;">Premium work delivered at honest prices, maximizing the value of your tech investments.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                        <h3 class="card-title" style="font-size: 1.15rem;">Local Expertise</h3>
+                        <p class="card-description" style="font-size: 0.875rem;">Based in Chennai, India. We understand local customer behaviors, trends, and market demands.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section-alt">
+            <div class="container">
+                <div class="about-grid">
+                    <div class="about-left reveal">
+                        <span class="section-tag">About Pineapple</span>
+                        <h2>Bespoke Engineering for Complex Web Requirements</h2>
+                        <p>Pineapple is a technical studio that designs and deploys high-performance web systems for modern organizations. We eliminate boilerplate templates in favor of optimized codebases, stable database structures, and fast load speeds.</p>
+                        <p>We partner with clinics, educational institutions, and retail groups to translate their business operations into reliable, secure, and clean digital infrastructure.</p>
+                    </div>
+                    
+                    <div class="about-right reveal">
+                        <h3 style="margin-bottom: 1.5rem; font-family: var(--font-display);">Our Core Focus Areas</h3>
+                        <div class="focus-list">
+                            <div class="focus-item">
+                                <div class="focus-icon"><i class="fa-solid fa-user-doctor"></i></div>
+                                <div class="focus-text">Clinics &amp; Healthcare Groups</div>
+                            </div>
+                            <div class="focus-item">
+                                <div class="focus-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                                <div class="focus-text">Schools &amp; Educational Institutes</div>
+                            </div>
+                            <div class="focus-item">
+                                <div class="focus-icon"><i class="fa-solid fa-store"></i></div>
+                                <div class="focus-text">Retail Groups &amp; Showrooms</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="grid-bg-container">
+            <div class="grid-bg"></div>
+            <div class="container">
+                <div class="contact-grid">
+                    <!-- Contact Info -->
+                    <div class="contact-info reveal">
+                        <span class="section-tag">Connect With Us</span>
+                        <h2>Let's discuss your next project</h2>
+                        <p style="margin-bottom: 1.5rem;">Partner with us to engineer premium web systems. A developer from our team will respond to your request within 24 business hours.</p>
+                        
+                        <div class="contact-info-card">
+                            <div class="contact-info-icon"><i class="fa-solid fa-envelope"></i></div>
+                            <div class="contact-info-details">
+                                <h4>Email Us</h4>
+                                <a href="mailto:pineapple.apt26@gmail.com">pineapple.apt26@gmail.com</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-card">
+                            <div class="contact-info-icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="contact-info-details">
+                                <h4>Location</h4>
+                                <p>Chennai, India</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form Card -->
+                    <div class="reveal">
+                        <div class="contact-form-card">
+                            <form id="contact-form" action="https://formspree.io/f/mykbjnla" method="POST">
+                                <div class="form-group-row">
+                                    <div class="form-group">
+                                        <label for="name">Full Name</label>
+                                        <input type="text" id="name" name="name" placeholder="e.g., Dr. Anirudh Dev" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email Address</label>
+                                        <input type="email" id="email" name="email" placeholder="you@organization.com" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="service">Requested Service</label>
+                                    <div class="select-wrapper">
+                                        <select id="service" name="service" required>
+                                            <option value="" disabled selected>Choose a service...</option>
+                                            <option value="app-design">Bespoke Web Application Design</option>
+                                            <option value="performance">System Performance Optimization</option>
+                                            <option value="consulting">Technical Infrastructure Consulting</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group last">
+                                    <label for="message">Project Scope</label>
+                                    <textarea id="message" name="message" rows="5" placeholder="e.g., We need a static patient portal integrated with our internal database systems..." required></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.875rem;">Send Message</button>
+                            </form>
+
+                            <!-- Success Overlay -->
+                            <div id="form-success" class="form-success-overlay">
+                                <div class="success-icon-wrapper"><i class="fa-solid fa-check"></i></div>
+                                <h3>Message Sent</h3>
+                                <p>Thank you. A developer from our team will get in touch with you shortly.</p>
+                                <button type="button" id="success-close" class="btn btn-secondary">Send Another</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <!-- Column 1: Brand & Socials -->
+                <div class="footer-column brand-col">
+                    <a href="#home" class="logo" aria-label="Pineapple Home">
+                        <img src="logo.png" alt="Pineapple Logo" class="logo-icon">
+                        <span class="brand-name">PINEAPPLE</span>
+                    </a>
+                    <p class="brand-desc">Bespoke engineering and custom software architecture. We design and deploy clean, secure, and fast digital systems for enterprise groups.</p>
+                    <div class="footer-socials">
+                        <a href="#" class="footer-social-link">Twitter</a>
+                        <span class="social-separator">/</span>
+                        <a href="#" class="footer-social-link">LinkedIn</a>
+                        <span class="social-separator">/</span>
+                        <a href="#" class="footer-social-link">GitHub</a>
+                    </div>
+                </div>
+
+                <!-- Column 2: Navigation -->
+                <div class="footer-column links-col">
+                    <h4>Navigation</h4>
+                    <div class="footer-links-grid">
+                        <a href="#home" class="footer-link">Home</a>
+                        <a href="#about" class="footer-link">About Us</a>
+                        <a href="#services" class="footer-link">Services</a>
+                        <a href="#contact" class="footer-link">Contact</a>
+                    </div>
+                </div>
+
+                <!-- Column 3: Services -->
+                <div class="footer-column services-col">
+                    <h4>Services</h4>
+                    <div class="footer-links-grid">
+                        <span class="footer-static-item">Web Design</span>
+                        <span class="footer-static-item">SEO &amp; Visibility</span>
+                        <span class="footer-static-item">Performance Optimization</span>
+                        <span class="footer-static-item">Dedicated Support</span>
+                    </div>
+                </div>
+
+                <!-- Column 4: Contact -->
+                <div class="footer-column contact-col">
+                    <h4>Get In Touch</h4>
+                    <div class="footer-contact-details">
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-label">Email</span>
+                            <a href="mailto:pineapple.apt26@gmail.com" class="footer-contact-val">pineapple.apt26@gmail.com</a>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-label">Location</span>
+                            <span class="footer-contact-val">Chennai, India</span>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-label">Response</span>
+                            <span class="footer-contact-val">Within 24 Hours</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Pineapple Web Solutions. All rights reserved.</p>
+                <p class="footer-tagline">Designed with precision.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Bundle -->
+    <script src="index.js"></script>
+    
+    <!-- Fallback Safety: Auto-dismiss loader overlay after 2000ms -->
+    <script>
+        setTimeout(() => {
+            const overlay = document.getElementById('landing-overlay');
+            if (overlay) {
+                overlay.classList.add('fade-out');
+                setTimeout(() => {
+                    try { overlay.remove(); } catch(e) {}
+                }, 800);
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

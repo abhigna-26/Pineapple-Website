@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security | Pineapple</title>
+    <meta name="description" content="Pineapple's security policy, design practices, and standards for protecting data and applications.">
+    
+    <!-- Style sheets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Flash-free Theme Check Script -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- Custom Cursor Follower -->
+    <div class="custom-cursor-area" aria-hidden="true">
+        <div class="custom-cursor-dot"></div>
+        <div class="custom-cursor-ring"></div>
+    </div>
+
+    <!-- Environmental Foliage Depth Layers -->
+    <div class="foliage foliage-left" aria-hidden="true">
+        <svg viewBox="0 0 100 200" fill="none" stroke="currentColor">
+            <path d="M50 190 C50 130 50 70 50 10" stroke="var(--sage)" stroke-width="1.5"/>
+            <path d="M50 150 Q20 135 15 115 Q25 95 50 115" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 110 Q15 95 10 75 Q20 55 50 75" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 70 Q10 55 8 35 Q18 15 50 35" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 130 Q80 115 85 95 Q75 75 50 95" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 90 Q85 75 90 55 Q80 35 50 55" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 50 Q90 35 92 15 Q82 -5 50 15" fill="var(--sage)" opacity="0.6"/>
+        </svg>
+    </div>
+    <div class="foliage foliage-right" aria-hidden="true">
+        <svg viewBox="0 0 100 200" fill="none" stroke="currentColor">
+            <path d="M50 190 C50 130 50 70 50 10" stroke="var(--sage)" stroke-width="1.5"/>
+            <path d="M50 140 Q25 120 20 100 Q30 80 50 100" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 100 Q20 85 15 65 Q25 45 50 65" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 160 Q75 145 80 125 Q70 105 50 125" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 120 Q80 105 85 85 Q75 65 50 85" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 80 Q85 65 90 45 Q80 25 50 45" fill="var(--sage)" opacity="0.6"/>
+            <path d="M50 40 Q90 25 92 5 Q82 -15 50 5" fill="var(--sage)" opacity="0.6"/>
+        </svg>
+    </div>
+
+    <!-- Background Canvases -->
+    <canvas id="bg-canvas"></canvas>
+    <canvas id="particle-canvas"></canvas>
+    <div id="cursor-spotlight"></div>
+
+    <!-- Header Navigation -->
+    <header class="header" id="header">
+        <div class="container">
+            <a href="index.html#home" class="logo" id="logo-link" aria-label="Pineapple Home">
+                <img src="logo.png" alt="Pineapple Logo" class="logo-icon">
+                <span class="brand-name">PINEAPPLE</span>
+            </a>
+
+            <!-- Desktop Links -->
+            <nav aria-label="Desktop Navigation">
+                <ul class="nav-links">
+                    <li><a href="index.html#home" class="nav-link">Home</a></li>
+                    <li><a href="index.html#about" class="nav-link">About</a></li>
+                    <li><a href="index.html#services" class="nav-link">Services</a></li>
+                    <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-right header-actions">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle visual theme">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <a href="index.html#contact" class="btn btn-primary cta-button">Let's Talk</a>
+                <button id="mobile-menu-btn" class="hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <span class="line-1"></span>
+                    <span class="line-2"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Overlay Menu -->
+    <div id="mobile-menu" class="mobile-menu">
+        <nav aria-label="Mobile Navigation">
+            <ul class="mobile-menu-links">
+                <li><a href="index.html#home" class="mobile-menu-link" style="transition-delay: 0.1s">Home</a></li>
+                <li><a href="index.html#about" class="mobile-menu-link" style="transition-delay: 0.15s">About</a></li>
+                <li><a href="index.html#services" class="mobile-menu-link" style="transition-delay: 0.2s">Services</a></li>
+                <li><a href="index.html#contact" class="mobile-menu-link" style="transition-delay: 0.25s">Contact</a></li>
+                <li><a href="index.html#contact" class="btn btn-primary mobile-menu-link" style="transition-delay: 0.3s; margin-top: 1rem;">Let's Talk</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <section class="legal-container">
+            <h1 class="legal-title">Security Practices</h1>
+            <p class="legal-meta">Last Updated: June 15, 2026</p>
+            
+            <div class="legal-content">
+                <p>Security is not an afterthought at Pineapple. We build custom websites and portals with data protection and vulnerability prevention as core tenets of our architectural decisions.</p>
+                
+                <h3>1. Secure Coding Standards</h3>
+                <p>We write code following modern web security practices, design patterns, and OWASP recommendations. Specifically, we focus on:</p>
+                <ul>
+                    <li>Input Validation and Output Encoding to prevent Cross-Site Scripting (XSS)</li>
+                    <li>Secure parameterized database queries to prevent SQL Injection</li>
+                    <li>Strict Content Security Policies (CSP) to restrict unauthorized script executions</li>
+                    <li>Avoiding insecure direct object references (IDOR) through rigorous permission mapping</li>
+                </ul>
+
+                <h3>2. Data Encryption</h3>
+                <p>Protecting user and client data in transit and at rest is crucial:</p>
+                <ul>
+                    <li>All data transmitted between browsers and our websites is encrypted using modern TLS (HTTPS) standards.</li>
+                    <li>Sensible information such as passwords, database connections, and api tokens are securely stored and encrypted using salt-hashed algorithms (like bcrypt) at rest.</li>
+                </ul>
+
+                <h3>3. Infrastructure & Deployment</h3>
+                <p>We build on secure hosting platforms (such as Netlify, Vercel, or AWS) that offer advanced protection features:</p>
+                <ul>
+                    <li>Automated web application firewalls (WAF) to mitigate DDoS attacks</li>
+                    <li>Secure deployment pipelines with secret environment variables (never committed to Git)</li>
+                    <li>Regular dependency audits using automated vulnerability scanner bots (like Dependabot)</li>
+                </ul>
+
+                <h3>4. Access Controls</h3>
+                <p>We implement role-based access control (RBAC) in admin panels, ensuring users only access information and actions necessary for their specific organizational tasks. Session management tokens are stored in secure, HttpOnly, and SameSite cookies.</p>
+
+                <h3>5. Reporting Vulnerabilities</h3>
+                <p>We encourage developers and security researchers to report any potential security issues. If you notice a vulnerability in any systems we maintain, please report it to us immediately at <a href="mailto:pineapple.apt26@gmail.com" class="text-italic-rose">pineapple.apt26@gmail.com</a>.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-column brand-col">
+                    <a href="index.html#home" class="logo" aria-label="Pineapple Home">
+                        <img src="logo.png" alt="Pineapple Logo" class="logo-icon">
+                        <span class="brand-name">PINEAPPLE</span>
+                    </a>
+                    <p class="brand-desc">Bespoke engineering and custom software architecture. We design and deploy clean, secure, and fast digital systems for enterprise groups.</p>
+                    <div class="footer-socials">
+                        <a href="#" class="footer-social-link">Twitter</a>
+                        <span class="social-separator">/</span>
+                        <a href="#" class="footer-social-link">LinkedIn</a>
+                        <span class="social-separator">/</span>
+                        <a href="#" class="footer-social-link">GitHub</a>
+                    </div>
+                </div>
+
+                <div class="footer-column links-col">
+                    <h4>Navigation</h4>
+                    <div class="footer-links-grid">
+                        <a href="index.html#home" class="footer-link">Home</a>
+                        <a href="index.html#about" class="footer-link">About Us</a>
+                        <a href="index.html#services" class="footer-link">Services</a>
+                        <a href="index.html#contact" class="footer-link">Contact</a>
+                    </div>
+                </div>
+
+                <div class="footer-column services-col">
+                    <h4>Services</h4>
+                    <div class="footer-links-grid">
+                        <span class="footer-static-item">Web Design</span>
+                        <span class="footer-static-item">SEO &amp; Visibility</span>
+                        <span class="footer-static-item">Performance Optimization</span>
+                        <span class="footer-static-item">Dedicated Support</span>
+                    </div>
+                </div>
+
+                <div class="footer-column contact-col">
+                    <h4>Get In Touch</h4>
+                    <div class="footer-contact-details">
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-label">Email</span>
+                            <a href="mailto:pineapple.apt26@gmail.com" class="footer-contact-val">pineapple.apt26@gmail.com</a>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-label">Location</span>
+                            <span class="footer-contact-val">Chennai, India</span>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-label">Response</span>
+                            <span class="footer-contact-val">Within 24 Hours</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Pineapple. All rights reserved.</p>
+                <div class="footer-legal-links">
+                    <a href="privacy.html" class="footer-legal-link">Privacy Policy</a>
+                    <span class="legal-separator">•</span>
+                    <a href="terms.html" class="footer-legal-link">Terms &amp; Conditions</a>
+                    <span class="legal-separator">•</span>
+                    <a href="security.html" class="footer-legal-link">Security</a>
+                </div>
+                <p class="footer-tagline">Designed with precision.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Bundle -->
+    <script src="index.js"></script>
+</body>
+</html>

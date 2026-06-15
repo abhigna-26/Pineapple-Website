@@ -819,37 +819,135 @@ const init = () => {
 
     render();
 
-    // 13. Scroll Reveal Observer with Fallbacks
-    const revealElements = document.querySelectorAll('.reveal, .reveal-stagger');
-    
+    // 13. Advanced Word-by-Word Split and Scroll Reveal Observer (Eloqwnt-style)
+    const splitTextIntoSpans = (element) => {
+        const wrapTextNode = (node) => {
+            const text = node.textContent;
+            const words = text.split(/(\s+)/);
+            const fragment = document.createDocumentFragment();
+            
+            words.forEach(word => {
+                if (word.trim() === '') {
+                    fragment.appendChild(document.createTextNode(word));
+                } else {
+                    const container = document.createElement('span');
+                    container.style.display = 'inline-block';
+                    container.style.overflow = 'hidden';
+                    container.style.verticalAlign = 'bottom';
+                    
+                    const wordSpan = document.createElement('span');
+                    wordSpan.textContent = word;
+                    wordSpan.style.display = 'inline-block';
+                    wordSpan.classList.add('reveal-word');
+                    
+                    container.appendChild(wordSpan);
+                    fragment.appendChild(container);
+                }
+            });
+            node.parentNode.replaceChild(fragment, node);
+        };
+
+        const traverse = (node) => {
+            const childNodes = Array.from(node.childNodes);
+            childNodes.forEach(child => {
+                if (child.nodeType === Node.TEXT_NODE) {
+                    wrapTextNode(child);
+                } else if (child.nodeType === Node.ELEMENT_NODE && child.tagName !== 'SCRIPT' && !child.classList.contains('reveal-word')) {
+                    traverse(child);
+                }
+            });
+        };
+        
+        traverse(element);
+    };
+
+    // Initialize text splits for headings
+    const textRevealElements = document.querySelectorAll('.hero h1, .section-title h2, .about-left h2, .contact-info h2');
+    textRevealElements.forEach(el => splitTextIntoSpans(el));
+
+    // Combine all elements to observe
+    const revealElements = document.querySelectorAll('.reveal, .reveal-stagger, .hero h1, .section-title h2, .about-left h2, .contact-info h2, .hero-canvas, #hero-canvas, .service-card-visual, .about-right');
+
     if (!window.IntersectionObserver) {
+        // Fallback: immediately show everything
         revealElements.forEach(el => {
             el.classList.add('revealed');
+            const words = el.querySelectorAll('.reveal-word');
+            words.forEach(w => {
+                w.style.transform = 'translateY(0)';
+                w.style.opacity = '1';
+            });
         });
     } else {
         const revealOptions = {
             root: null,
             threshold: 0.05,
-            rootMargin: '0px 0px -20px 0px'
+            rootMargin: '0px 0px -40px 0px'
         };
 
         const revealObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                    if (entry.target.classList.contains('reveal-stagger')) {
-                        const children = entry.target.children;
-                        Array.from(children).forEach((child, index) => {
-                            child.style.transitionDelay = `${index * 0.06}s`;
+                    const el = entry.target;
+                    el.classList.add('revealed');
+                    
+                    // Trigger word reveal if it's a split text element
+                    const words = el.querySelectorAll('.reveal-word');
+                    if (words.length > 0) {
+                        words.forEach((word, idx) => {
+                            word.style.transition = 'transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s ease';
+                            word.style.transitionDelay = `${idx * 25}ms`;
+                            requestAnimationFrame(() => {
+                                word.style.transform = 'translateY(0)';
+                                word.style.opacity = '1';
+                            });
                         });
                     }
-                    observer.unobserve(entry.target);
+
+                    // Trigger staggered fade-in for list/grid children
+                    if (el.classList.contains('reveal-stagger')) {
+                        const children = el.children;
+                        Array.from(children).forEach((child, index) => {
+                            child.style.transitionDelay = `${index * 0.08}s`;
+                            child.classList.add('revealed');
+                        });
+                    }
+                    
+                    observer.unobserve(el);
                 }
             });
         }, revealOptions);
 
         revealElements.forEach(el => revealObserver.observe(el));
     }
+
+    // 16. Scroll Parallax for Foliage Elements (Depth-of-field movement)
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const updateParallax = () => {
+        const scrolled = window.scrollY;
+        const foliageLeft = document.querySelector('.foliage-left');
+        const foliageRight = document.querySelector('.foliage-right');
+        const foliageFgLeft = document.querySelector('.foliage-fg-left');
+        const foliageFgRight = document.querySelector('.foliage-fg-right');
+        
+        if (foliageLeft) foliageLeft.style.transform = `rotate(15deg) translateY(${scrolled * 0.08}px)`;
+        if (foliageRight) foliageRight.style.transform = `rotate(-30deg) translateY(${-scrolled * 0.06}px)`;
+        if (foliageFgLeft) foliageFgLeft.style.transform = `rotate(45deg) translateY(${scrolled * 0.18}px)`;
+        if (foliageFgRight) foliageFgRight.style.transform = `rotate(-15deg) translateY(${-scrolled * 0.14}px)`;
+        
+        ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(updateParallax);
+            ticking = true;
+        }
+    });
+    // Trigger initially
+    updateParallax();
 
     // 14. Form Submission Handling via Fetch (AJAX)
     const contactForm = document.getElementById('contact-form');
@@ -901,6 +999,142 @@ const init = () => {
             formSuccessOverlay.classList.remove('active');
         });
     }
+
+    // 15. Process Card Detail Overlay Toggle
+    const processCards = document.querySelectorAll('.process-card');
+    processCards.forEach(card => {
+        const arrowBtn = card.querySelector('.process-arrow-btn');
+        const closeBtn = card.querySelector('.close-overlay-btn');
+        
+        const openDetail = (e) => {
+            if (e) e.stopPropagation();
+            // Close any other open process card details first
+            processCards.forEach(otherCard => {
+                if (otherCard !== card) {
+                    otherCard.classList.remove('detail-active');
+                }
+            });
+            card.classList.add('detail-active');
+        };
+
+        const closeDetail = (e) => {
+            if (e) e.stopPropagation();
+            card.classList.remove('detail-active');
+        };
+
+        if (arrowBtn) {
+            arrowBtn.addEventListener('click', openDetail);
+            arrowBtn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openDetail(e);
+                }
+            });
+        }
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeDetail);
+            closeBtn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    closeDetail(e);
+                }
+            });
+        }
+    });
+
+    // Close process card details if clicking outside the card
+    document.addEventListener('click', (e) => {
+        processCards.forEach(card => {
+            if (card.classList.contains('detail-active') && !card.contains(e.target)) {
+                card.classList.remove('detail-active');
+            }
+        });
+    });
+
+    // 17. Custom Cursor Inertia Follower (Eloqwnt-style)
+    const cursorArea = document.querySelector('.custom-cursor-area');
+    const cursorDot = document.querySelector('.custom-cursor-dot');
+    const cursorRing = document.querySelector('.custom-cursor-ring');
+    
+    if (cursorArea && cursorDot && cursorRing) {
+        let mouseX = 0, mouseY = 0;
+        let dotX = 0, dotY = 0;
+        let ringX = 0, ringY = 0;
+        let hasMoved = false;
+        
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorArea.style.opacity = '1';
+            if (!hasMoved) {
+                hasMoved = true;
+                dotX = mouseX;
+                dotY = mouseY;
+                ringX = mouseX;
+                ringY = mouseY;
+            }
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursorArea.style.opacity = '0';
+        });
+        
+        const updateCursor = () => {
+            // Linear interpolation (Lerp) for smooth lag delay
+            dotX += (mouseX - dotX) * 0.32;
+            dotY += (mouseY - dotY) * 0.32;
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+            
+            cursorDot.style.left = `${dotX}px`;
+            cursorDot.style.top = `${dotY}px`;
+            cursorRing.style.left = `${ringX}px`;
+            cursorRing.style.top = `${ringY}px`;
+            
+            requestAnimationFrame(updateCursor);
+        };
+        updateCursor();
+        
+        // Bind hover states for interactive assets
+        const refreshHoverables = () => {
+            const hoverables = document.querySelectorAll('a, button, select, input, textarea, [role="button"], .theme-toggle, .close-overlay-btn, .process-arrow-btn');
+            hoverables.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    cursorArea.classList.add('hovered');
+                });
+                item.addEventListener('mouseleave', () => {
+                    cursorArea.classList.remove('hovered');
+                });
+            });
+        };
+        refreshHoverables();
+        // Fallback re-hook triggers on state shifts
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest('a, button, select, input, textarea, [role="button"], .theme-toggle, .close-overlay-btn, .process-arrow-btn')) {
+                cursorArea.classList.add('hovered');
+            } else {
+                cursorArea.classList.remove('hovered');
+            }
+        });
+    }
+
+    // 18. Magnetic Button Hover Effect
+    const magneticBtns = document.querySelectorAll('.btn-primary, .btn-secondary, .theme-toggle, .process-arrow-btn, .close-overlay-btn');
+    magneticBtns.forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            // Move item 25% closer towards mouse offset
+            btn.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+        });
+        
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = '';
+        });
+    });
 };
 
 // Defensive Initialization trigger check

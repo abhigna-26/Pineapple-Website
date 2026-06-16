@@ -949,56 +949,7 @@ const init = () => {
     // Trigger initially
     updateParallax();
 
-    // 14. Form Submission Handling via Fetch (AJAX)
-    const contactForm = document.getElementById('contact-form');
-    const formSuccessOverlay = document.getElementById('form-success');
-    const successCloseBtn = document.getElementById('success-close');
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const submitButton = contactForm.querySelector('button[type="submit"]');
-            const originalButtonText = submitButton.textContent;
-            submitButton.disabled = true;
-            submitButton.textContent = 'Sending...';
-
-            const formData = new FormData(contactForm);
-            
-            try {
-                const response = await fetch(contactForm.action, {
-                    method: contactForm.method,
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    formSuccessOverlay.classList.add('active');
-                    contactForm.reset();
-                } else {
-                    const data = await response.json();
-                    if (data && data.errors) {
-                        alert(data.errors.map(error => error.message).join(', '));
-                    } else {
-                        alert('Oops! There was a problem submitting your form.');
-                    }
-                }
-            } catch (error) {
-                alert('Oops! There was a network error submitting your form. Please try again.');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = originalButtonText;
-            }
-        });
-    }
-
-    if (successCloseBtn) {
-        successCloseBtn.addEventListener('click', () => {
-            formSuccessOverlay.classList.remove('active');
-        });
-    }
+    // 14. Form Submission Handling via Fetch has been removed and moved to the end of the file.
 
     // 15. Process Card Detail Overlay Toggle
     const processCards = document.querySelectorAll('.process-card');
@@ -1177,7 +1128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (formSuccess) {
                         formSuccess.classList.add('active');
                         // Close success overlay listener
-                        const closeOverlayBtn = document.getElementById('close-overlay-btn');
+                        const closeOverlayBtn = document.getElementById('success-close');
                         if (closeOverlayBtn) {
                             closeOverlayBtn.addEventListener('click', () => {
                                 formSuccess.classList.remove('active');

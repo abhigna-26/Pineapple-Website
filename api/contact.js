@@ -1,14 +1,20 @@
 const { Resend } = require('resend');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 module.exports = async (req, res) => {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
+  // Retrieve and validate Resend API key
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.error('RESEND_API_KEY is not configured in environment variables.');
+    return res.status(500).json({ error: 'Mail service configuration error: RESEND_API_KEY is missing' });
+  }
+
   try {
+    const resend = new Resend(apiKey);
     const { name, email, service, message } = req.body;
 
     // Validate inputs
@@ -38,3 +44,4 @@ module.exports = async (req, res) => {
     res.status(500).json({ error: 'Failed to send email' });
   }
 };
+

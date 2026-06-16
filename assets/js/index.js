@@ -1143,3 +1143,62 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+
+// Contact Form Handler (Resend Integration)
+document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.getElementById('contact-form');
+    const formSuccess = document.getElementById('form-success');
+    const submitBtn = contactForm ? contactForm.querySelector('button[type="submit"]') : null;
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending...';
+            }
+
+            const formData = new FormData(contactForm);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    if (formSuccess) {
+                        formSuccess.classList.add('active');
+                        // Close success overlay listener
+                        const closeOverlayBtn = document.getElementById('close-overlay-btn');
+                        if (closeOverlayBtn) {
+                            closeOverlayBtn.addEventListener('click', () => {
+                                formSuccess.classList.remove('active');
+                            }, { once: true });
+                        }
+                    } else {
+                        alert('Message sent successfully!');
+                    }
+                    contactForm.reset();
+                } else {
+                    alert('Error sending message: ' + (result.error || 'Please try again.'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error: Could not send message.');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                }
+            }
+        });
+    }
+});
